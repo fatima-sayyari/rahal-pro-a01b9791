@@ -241,7 +241,7 @@ function SearchSection() {
               <Field icon={MapPin} label="من" value={from} onChange={setFrom} valid={from.length>1} />
               <Field icon={MapPin} label="إلى"  value={to}   onChange={setTo}   valid={to.length>1} />
               <Field icon={Calendar} label="التاريخ" value={date} onChange={setDate} type="date" valid={!!date} />
-              <Field icon={Users} label="المسافرون" value={String(pax)} onChange={(v)=>setPax(+v||1)} type="number" valid={pax>0}/>
+              <Field icon={Users} label="المسافرون" value={String(pax)} onChange={(v: string)=>setPax(+v||1)} type="number" valid={pax>0}/>
               <button disabled={!valid}
                 className="rounded-xl font-bold text-background disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition"
                 style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
