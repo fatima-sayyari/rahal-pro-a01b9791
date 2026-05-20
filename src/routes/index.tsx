@@ -1,0 +1,435 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import {
+  Plane, Hotel, Palmtree, Briefcase, Search, ShieldCheck, Lock,
+  Star, Calendar, Users, MapPin, Phone, Mail, Instagram, Twitter,
+  Facebook, ArrowLeft, CheckCircle2, Sparkles, Globe,
+} from "lucide-react";
+import { Suitcase } from "@/components/Suitcase";
+import { WorldMap } from "@/components/WorldMap";
+import logo from "@/assets/logo.jpeg";
+import dubai from "@/assets/dest-dubai.jpg";
+import maldives from "@/assets/dest-maldives.jpg";
+import istanbul from "@/assets/dest-istanbul.jpg";
+import paris from "@/assets/dest-paris.jpg";
+import makkah from "@/assets/dest-makkah.jpg";
+import bali from "@/assets/dest-bali.jpg";
+
+export const Route = createFileRoute("/")({ component: Index });
+
+const services = [
+  { icon: Plane,     title: "رحلات الطيران", desc: "أفضل العروض على الدرجة الاقتصادية ورجال الأعمال.", anim: "plane-icon" },
+  { icon: Hotel,     title: "الفنادق",       desc: "أكثر من 2 مليون فندق حول العالم بأسعار حصرية.", anim: "bed-icon" },
+  { icon: Palmtree,  title: "الباقات السياحية", desc: "باقات مصممة بعناية لتجربة سفر لا تُنسى.", anim: "palm-icon" },
+  { icon: Briefcase, title: "الخدمات العامة",  desc: "تأشيرات، تأمين سفر، نقل خاص وتوصيل أمتعة.", anim: "luggage-icon" },
+];
+
+const destinations = [
+  { img: dubai,    name: "دبي",      country: "الإمارات",     price: "1,499" },
+  { img: maldives, name: "المالديف", country: "آسيا",         price: "3,899" },
+  { img: istanbul, name: "إسطنبول",  country: "تركيا",        price: "1,199" },
+  { img: paris,    name: "باريس",    country: "فرنسا",        price: "2,499" },
+  { img: makkah,   name: "مكة المكرمة", country: "السعودية",  price: "849" },
+  { img: bali,     name: "بالي",     country: "إندونيسيا",    price: "2,899" },
+];
+
+const reviews = [
+  { name: "نورة العتيبي", role: "مسافرة دائمة", text: "تجربة حجز سلسة ودعم على مدار الساعة. الرحال برو وفّر لي رحلة العمر إلى المالديف بأقل من المتوقع." },
+  { name: "خالد الزهراني", role: "رجل أعمال",    text: "أحجز كل رحلات أعمالي عبر المنصة منذ سنتين، الواجهة فاخرة والعمليات في غاية الاحترافية." },
+  { name: "سارة الحربي",   role: "مدوّنة سفر",   text: "الباقات السياحية فعلاً مدروسة بعناية. كل التفاصيل مهتم بها — حتى التوصيل من المطار." },
+];
+
+function Index() {
+  return (
+    <main className="relative overflow-x-clip">
+      <Nav />
+      <Hero />
+      <Services />
+      <JourneyPath />
+      <SearchSection />
+      <Destinations />
+      <Reviews />
+      <Footer />
+    </main>
+  );
+}
+
+function Nav() {
+  return (
+    <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-background/60 border-b border-amber-500/20">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="الرحال برو" className="w-10 h-10 rounded-lg object-cover" />
+          <span className="gold-text text-lg font-bold">الرحال برو</span>
+        </div>
+        <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+          <a href="#services" className="hover:text-amber-300 transition">خدماتنا</a>
+          <a href="#search" className="hover:text-amber-300 transition">احجز الآن</a>
+          <a href="#destinations" className="hover:text-amber-300 transition">الوجهات</a>
+          <a href="#reviews" className="hover:text-amber-300 transition">آراء العملاء</a>
+        </nav>
+        <button className="gold-border px-5 py-2 rounded-lg text-sm font-semibold text-amber-200 hover:glow-gold transition">
+          تسجيل الدخول
+        </button>
+      </div>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section className="relative pt-32 pb-20 min-h-screen flex items-center">
+      <div className="absolute inset-0 -z-10 opacity-50">
+        <WorldMap />
+      </div>
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center w-full">
+        <div className="fade-up">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/5 text-amber-300 text-xs mb-6">
+            <Sparkles className="w-3 h-3" /> منصة السفر الذكية الأولى عربياً
+          </div>
+          <h1 className="text-5xl md:text-6xl font-black leading-tight">
+            <span className="gold-text">رحال برو</span>
+            <br />
+            <span className="text-foreground/95">بوابتك للسفر الذكي</span>
+          </h1>
+          <p className="mt-6 text-lg text-muted-foreground max-w-lg">
+            رحلات طيران، فنادق فاخرة، وباقات سياحية مصممة بعناية —
+            كل ما يلزمك للسفر بأناقة في مكان واحد.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-4">
+            <a href="#search" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden"
+               style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
+              <span className="relative z-10 flex items-center gap-2">ابدأ رحلتك <ArrowLeft className="w-4 h-4" /></span>
+              <span className="absolute inset-0 shimmer" />
+            </a>
+            <a href="#services" className="gold-border px-7 py-3.5 rounded-xl font-semibold text-amber-200">
+              تعرف على خدماتنا
+            </a>
+          </div>
+          <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+            <Trust icon={ShieldCheck} text="مشفّر بالكامل" />
+            <Trust icon={Globe} text="+180 دولة" />
+            <Trust icon={Star} text="4.9/5 تقييم" />
+          </div>
+        </div>
+
+        <div className="relative">
+          <Suitcase />
+          {/* Holographic itinerary chips emerging */}
+          <div className="absolute -bottom-4 left-0 right-0 grid grid-cols-4 gap-2 fade-up" style={{ animationDelay: ".5s" }}>
+            {services.map((s, i) => (
+              <div key={i} className="gold-border rounded-xl p-3 text-center backdrop-blur-sm bg-card/50">
+                <s.icon className="w-5 h-5 mx-auto text-amber-300" />
+                <div className="text-[10px] mt-1 text-muted-foreground truncate">{s.title}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Trust({ icon: Icon, text }: { icon: any; text: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <Icon className="w-4 h-4 text-amber-400" />
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function Services() {
+  return (
+    <section id="services" className="py-24 relative">
+      <div className="max-w-7xl mx-auto px-6">
+        <SectionHeader eyebrow="خدماتنا" title="كل ما تحتاجه للسفر" desc="باقة متكاملة من الخدمات المصممة بأعلى معايير الفخامة والدقة." />
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((s, i) => (
+            <div key={i} className="service-card group gold-border rounded-2xl p-6 hover:glow-gold transition-all duration-500 hover:-translate-y-2">
+              <div className="icon-wrap inline-flex w-14 h-14 items-center justify-center rounded-xl mb-5"
+                   style={{ background: "linear-gradient(135deg,rgba(244,210,122,.15),rgba(182,125,42,.1))", border: "1px solid rgba(244,210,122,.3)" }}>
+                <s.icon className={`w-7 h-7 text-amber-300 ${s.anim}`} />
+              </div>
+              <h3 className="text-lg font-bold mb-2">{s.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+              <div className="mt-5 flex items-center gap-2 text-amber-300 text-sm font-semibold opacity-0 group-hover:opacity-100 transition">
+                اكتشف المزيد <ArrowLeft className="w-3 h-3" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function JourneyPath() {
+  return (
+    <section className="py-28 relative">
+      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <SectionHeader eyebrow="خط السفر السريع" title="رحلتك تبدأ من هنا" desc="من نقطة الانطلاق إلى الوجهة الأخيرة، كل محطة مرسومة بعناية على خط سفرنا الذكي." align="start" />
+          <div className="mt-8 space-y-4">
+            {[
+              { step: "01", t: "اختر وجهتك", d: "تصفّح آلاف الوجهات حول العالم." },
+              { step: "02", t: "خصّص رحلتك", d: "فنادق، طيران، خدمات إضافية بنقرة." },
+              { step: "03", t: "ادفع بأمان", d: "بوابات دفع مشفّرة بمعايير عالمية." },
+              { step: "04", t: "استمتع", d: "دعم على مدار الساعة طوال رحلتك." },
+            ].map((s) => (
+              <div key={s.step} className="flex items-start gap-4 gold-border rounded-xl p-4">
+                <div className="text-2xl font-black gold-text shrink-0 w-12">{s.step}</div>
+                <div>
+                  <div className="font-bold">{s.t}</div>
+                  <div className="text-sm text-muted-foreground">{s.d}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative h-[500px]">
+          <svg viewBox="0 0 400 500" className="w-full h-full">
+            <defs>
+              <linearGradient id="track" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#f6e3a3"/>
+                <stop offset="100%" stopColor="#b67d2a"/>
+              </linearGradient>
+              <filter id="g2"><feGaussianBlur stdDeviation="3"/></filter>
+            </defs>
+            {/* Glow under path */}
+            <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
+                  stroke="url(#track)" strokeWidth="10" fill="none" opacity=".25" filter="url(#g2)"/>
+            <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
+                  stroke="url(#track)" strokeWidth="3" fill="none" strokeDasharray="6 6" className="path-trail"/>
+
+            {/* Waypoints — palms */}
+            {[[80,80],[330,180],[80,300],[330,420]].map(([x,y],i)=>(
+              <g key={i}>
+                <circle cx={x} cy={y} r="14" fill="#1a1410" stroke="url(#track)" strokeWidth="2"/>
+                <g transform={`translate(${x-8},${y-8}) scale(.7)`} fill="#f4d27a">
+                  <path d="M10 22 q-1 -12 3 -22 q-6 4 -9 11 q7 -3 9 -11 q2 9 9 12 q-4 -8 -9 -11 q6 -1 11 4 q-4 -7 -11 -5 z M11 22 l1 -22 l-1 0 z"/>
+                </g>
+              </g>
+            ))}
+
+            <text x="200" y="260" textAnchor="middle" className="fill-amber-200" fontSize="20" fontWeight="700">
+              رحلتك تبدأ من هنا
+            </text>
+          </svg>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SearchSection() {
+  const [from, setFrom] = useState("الرياض");
+  const [to, setTo] = useState("دبي");
+  const [date, setDate] = useState("");
+  const [pax, setPax] = useState(1);
+  const valid = from.length > 1 && to.length > 1 && date;
+
+  return (
+    <section id="search" className="py-24 relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <SectionHeader eyebrow="ابحث واحجز" title="ابدأ بالبحث عن رحلتك" desc="نتائج فورية، أسعار مُحدّثة لحظيًا من شبكة آمنة متعددة المصادر." />
+
+        <div className="mt-12 brushed-metal rounded-3xl p-1 glow-gold">
+          <div className="bg-card/80 backdrop-blur-xl rounded-[22px] p-8">
+            <div className="grid md:grid-cols-5 gap-4">
+              <Field icon={MapPin} label="من" value={from} onChange={setFrom} valid={from.length>1} />
+              <Field icon={MapPin} label="إلى"  value={to}   onChange={setTo}   valid={to.length>1} />
+              <Field icon={Calendar} label="التاريخ" value={date} onChange={setDate} type="date" valid={!!date} />
+              <Field icon={Users} label="المسافرون" value={String(pax)} onChange={(v: string)=>setPax(+v||1)} type="number" valid={pax>0}/>
+              <button disabled={!valid}
+                className="rounded-xl font-bold text-background disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition"
+                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
+                <Search className="w-5 h-5" /> بحث
+              </button>
+            </div>
+            <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              بياناتك مشفّرة بـ AES‑256 ومحققة من جهة الخادم.
+            </div>
+          </div>
+        </div>
+
+        {/* Comparison table */}
+        <div className="mt-10 brushed-metal rounded-2xl p-1">
+          <div className="bg-card/70 rounded-[14px] overflow-hidden">
+            <div className="grid grid-cols-6 px-6 py-4 text-xs text-amber-300 border-b border-amber-500/20 font-semibold">
+              <div>شركة الطيران</div><div>المدة</div><div>التوقفات</div><div>الفئة</div><div>السعر</div><div></div>
+            </div>
+            {[
+              { a: "الخطوط السعودية", d: "5س 20د", s: "مباشرة", c: "اقتصادية", p: "1,499 ر.س" },
+              { a: "طيران الإمارات",  d: "5س 40د", s: "مباشرة", c: "اقتصادية", p: "1,720 ر.س" },
+              { a: "القطرية",         d: "8س 10د", s: "توقف 1", c: "أعمال",    p: "5,200 ر.س" },
+            ].map((r,i)=>(
+              <div key={i} className="grid grid-cols-6 px-6 py-4 items-center text-sm border-b border-amber-500/10 hover:bg-amber-500/5 transition">
+                <div className="font-semibold">{r.a}</div>
+                <div className="text-muted-foreground">{r.d}</div>
+                <div className="text-muted-foreground">{r.s}</div>
+                <div className="text-muted-foreground">{r.c}</div>
+                <div className="gold-text font-bold">{r.p}</div>
+                <button className="justify-self-end gold-border px-4 py-1.5 rounded-lg text-xs font-semibold text-amber-200">
+                  احجز
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Field({ icon: Icon, label, value, onChange, type = "text", valid }: any) {
+  return (
+    <label className="block">
+      <span className="text-xs text-muted-foreground mb-1.5 block">{label}</span>
+      <div className="relative">
+        <Icon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400/70" />
+        <input
+          type={type}
+          value={value}
+          onChange={(e)=>onChange(e.target.value)}
+          className="w-full bg-background/60 border border-amber-500/30 rounded-xl pr-10 pl-9 py-3 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition"
+        />
+        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400/70" />
+        {valid && <CheckCircle2 className="absolute left-9 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400" />}
+      </div>
+    </label>
+  );
+}
+
+function Destinations() {
+  return (
+    <section id="destinations" className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <SectionHeader eyebrow="وجهات مختارة" title="وجهات لا تُنسى" desc="اكتشف أجمل الوجهات التي اختارها خبراؤنا بعناية." />
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {destinations.map((d, i) => (
+            <article key={i} className="dest-card group relative rounded-2xl overflow-hidden gold-border bg-card/40">
+              {/* Suitcase handle on hover */}
+              <div className="handle absolute top-3 left-1/2 -translate-x-1/2 w-20 h-7 border-[5px] rounded-t-full z-10"
+                   style={{ borderColor: "#d9a441", borderBottom: "none", boxShadow: "0 0 12px rgba(217,164,65,.6)" }} />
+              <div className="overflow-hidden h-64">
+                <img src={d.img} alt={d.name} loading="lazy" width={800} height={1024} className="w-full h-full object-cover" />
+              </div>
+              <div className="p-5 flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-lg">{d.name}</h3>
+                  <p className="text-xs text-muted-foreground">{d.country}</p>
+                </div>
+                <div className="text-left">
+                  <div className="text-xs text-muted-foreground">يبدأ من</div>
+                  <div className="gold-text font-black text-lg">{d.price} ر.س</div>
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent pointer-events-none" />
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Reviews() {
+  return (
+    <section id="reviews" className="py-24">
+      <div className="max-w-7xl mx-auto px-6">
+        <SectionHeader eyebrow="آراء عملائنا" title="رضاهم هو إنجازنا" desc="آلاف المسافرين يثقون بنا في كل رحلة." />
+        <div className="mt-14 grid md:grid-cols-3 gap-6">
+          {reviews.map((r, i) => (
+            <div key={i} className="gold-border rounded-2xl p-7 bg-card/40 backdrop-blur-sm">
+              <div className="flex gap-1 mb-4">
+                {Array.from({length:5}).map((_,j)=><Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400"/>)}
+              </div>
+              <p className="text-foreground/90 leading-relaxed">{r.text}</p>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-background"
+                     style={{ background: "linear-gradient(135deg,#f6e3a3,#b67d2a)" }}>
+                  {r.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-semibold">{r.name}</div>
+                  <div className="text-xs text-muted-foreground">{r.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="brushed-metal mt-12 border-t border-amber-500/30">
+      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-10">
+        <div>
+          <div className="flex items-center gap-3 mb-4">
+            <img src={logo} alt="الرحال برو" className="w-12 h-12 rounded-lg" />
+            <div>
+              <div className="gold-text font-black text-lg">الرحال برو</div>
+              <div className="text-[11px] text-muted-foreground">للتسفيرات و الخدمات العامة</div>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            منصة سفر متكاملة بمعايير فاخرة، نخدم آلاف العملاء حول المنطقة.
+          </p>
+        </div>
+
+        <FooterCol title="روابط سريعة" items={["الرئيسية","خدماتنا","الوجهات","الباقات","تواصل معنا"]} />
+        <FooterCol title="الدعم"        items={["الأسئلة الشائعة","سياسة الخصوصية","الشروط والأحكام","سياسة الاسترداد"]} />
+
+        <div>
+          <div className="font-bold mb-4 text-amber-200">تواصل معنا</div>
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-400"/> +966 50 000 0000</div>
+            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400"/> info@rahhalpro.sa</div>
+            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400"/> الرياض، المملكة العربية السعودية</div>
+          </div>
+          <div className="mt-5 flex gap-3">
+            {[Instagram, Twitter, Facebook].map((I, i) => (
+              <a key={i} href="#" className="w-10 h-10 rounded-lg gold-border flex items-center justify-center text-amber-300 hover:glow-gold transition">
+                <I className="w-4 h-4"/>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-amber-500/20 py-5 text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} الرحال برو. جميع الحقوق محفوظة.
+      </div>
+    </footer>
+  );
+}
+
+function FooterCol({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div>
+      <div className="font-bold mb-4 text-amber-200">{title}</div>
+      <ul className="space-y-2 text-sm text-muted-foreground">
+        {items.map((it) => (
+          <li key={it}><a href="#" className="hover:text-amber-300 transition">{it}</a></li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SectionHeader({ eyebrow, title, desc, align = "center" }: any) {
+  return (
+    <div className={`max-w-2xl ${align === "center" ? "mx-auto text-center" : ""}`}>
+      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/5 text-amber-300 text-xs mb-4">
+        <Sparkles className="w-3 h-3" /> {eyebrow}
+      </div>
+      <h2 className="text-4xl md:text-5xl font-black"><span className="gold-text">{title}</span></h2>
+      <p className="mt-4 text-muted-foreground">{desc}</p>
+    </div>
+  );
+}
