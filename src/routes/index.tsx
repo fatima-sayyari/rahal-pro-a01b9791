@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
-  Plane, Hotel, Palmtree, Briefcase, Search, ShieldCheck, Lock,
-  Star, Calendar, Users, MapPin, Phone, Mail, Instagram, Twitter,
-  Facebook, ArrowLeft, CheckCircle2, Sparkles, Globe,
+  Plane, Hotel, Palmtree, Briefcase, ShieldCheck,
+  Star, MapPin, Phone, Mail, Instagram, Twitter,
+  Facebook, ArrowLeft, Sparkles, Globe, Send, User,
 } from "lucide-react";
 import { Suitcase } from "@/components/Suitcase";
 import { WorldMap } from "@/components/WorldMap";
@@ -25,18 +25,18 @@ const services = [
 ];
 
 const destinations = [
-  { img: dubai,    name: "دبي",      country: "الإمارات",     price: "1,499" },
-  { img: maldives, name: "المالديف", country: "آسيا",         price: "3,899" },
-  { img: istanbul, name: "إسطنبول",  country: "تركيا",        price: "1,199" },
-  { img: paris,    name: "باريس",    country: "فرنسا",        price: "2,499" },
-  { img: makkah,   name: "مكة المكرمة", country: "السعودية",  price: "849" },
-  { img: bali,     name: "بالي",     country: "إندونيسيا",    price: "2,899" },
+  { img: dubai,    name: "دبي",      country: "الإمارات" },
+  { img: maldives, name: "المالديف", country: "آسيا" },
+  { img: istanbul, name: "إسطنبول",  country: "تركيا" },
+  { img: paris,    name: "باريس",    country: "فرنسا" },
+  { img: makkah,   name: "مكة المكرمة", country: "السعودية" },
+  { img: bali,     name: "بالي",     country: "إندونيسيا" },
 ];
 
-const reviews = [
-  { name: "نورة العتيبي", role: "مسافرة دائمة", text: "تجربة حجز سلسة ودعم على مدار الساعة. الرحال برو وفّر لي رحلة العمر إلى المالديف بأقل من المتوقع." },
-  { name: "خالد الزهراني", role: "رجل أعمال",    text: "أحجز كل رحلات أعمالي عبر المنصة منذ سنتين، الواجهة فاخرة والعمليات في غاية الاحترافية." },
-  { name: "سارة الحربي",   role: "مدوّنة سفر",   text: "الباقات السياحية فعلاً مدروسة بعناية. كل التفاصيل مهتم بها — حتى التوصيل من المطار." },
+const initialReviews = [
+  { name: "نورة العتيبي", role: "مسافرة دائمة", text: "تجربة حجز سلسة ودعم على مدار الساعة. الرحال برو وفّر لي رحلة العمر إلى المالديف بأقل من المتوقع.", rating: 5 },
+  { name: "خالد الزهراني", role: "رجل أعمال",    text: "أحجز كل رحلات أعمالي عبر المنصة منذ سنتين، الواجهة فاخرة والعمليات في غاية الاحترافية.", rating: 5 },
+  { name: "سارة الحربي",   role: "مدوّنة سفر",   text: "الباقات السياحية فعلاً مدروسة بعناية. كل التفاصيل مهتم بها — حتى التوصيل من المطار.", rating: 5 },
 ];
 
 function Index() {
@@ -46,7 +46,6 @@ function Index() {
       <Hero />
       <Services />
       <JourneyPath />
-      <SearchSection />
       <Destinations />
       <Reviews />
       <Footer />
@@ -64,13 +63,12 @@ function Nav() {
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           <a href="#services" className="hover:text-amber-300 transition">خدماتنا</a>
-          <a href="#search" className="hover:text-amber-300 transition">احجز الآن</a>
           <a href="#destinations" className="hover:text-amber-300 transition">الوجهات</a>
           <a href="#reviews" className="hover:text-amber-300 transition">آراء العملاء</a>
         </nav>
-        <button className="gold-border px-5 py-2 rounded-lg text-sm font-semibold text-amber-200 hover:glow-gold transition">
+        <Link to="/login" className="gold-border px-5 py-2 rounded-lg text-sm font-semibold text-amber-200 hover:glow-gold transition">
           تسجيل الدخول
-        </button>
+        </Link>
       </div>
     </header>
   );
@@ -97,11 +95,11 @@ function Hero() {
             كل ما يلزمك للسفر بأناقة في مكان واحد.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <a href="#search" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden"
+            <Link to="/login" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden"
                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
               <span className="relative z-10 flex items-center gap-2">ابدأ رحلتك <ArrowLeft className="w-4 h-4" /></span>
               <span className="absolute inset-0 shimmer" />
-            </a>
+            </Link>
             <a href="#services" className="gold-border px-7 py-3.5 rounded-xl font-semibold text-amber-200">
               تعرف على خدماتنا
             </a>
@@ -115,7 +113,6 @@ function Hero() {
 
         <div className="relative">
           <Suitcase />
-          {/* Holographic itinerary chips emerging */}
           <div className="absolute -bottom-4 left-0 right-0 grid grid-cols-4 gap-2 fade-up" style={{ animationDelay: ".5s" }}>
             {services.map((s, i) => (
               <div key={i} className="gold-border rounded-xl p-3 text-center backdrop-blur-sm bg-card/50">
@@ -197,13 +194,11 @@ function JourneyPath() {
               </linearGradient>
               <filter id="g2"><feGaussianBlur stdDeviation="3"/></filter>
             </defs>
-            {/* Glow under path */}
             <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
                   stroke="url(#track)" strokeWidth="10" fill="none" opacity=".25" filter="url(#g2)"/>
             <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
                   stroke="url(#track)" strokeWidth="3" fill="none" strokeDasharray="6 6" className="path-trail"/>
 
-            {/* Waypoints — palms */}
             {[[80,80],[330,180],[80,300],[330,420]].map(([x,y],i)=>(
               <g key={i}>
                 <circle cx={x} cy={y} r="14" fill="#1a1410" stroke="url(#track)" strokeWidth="2"/>
@@ -223,86 +218,6 @@ function JourneyPath() {
   );
 }
 
-function SearchSection() {
-  const [from, setFrom] = useState("الرياض");
-  const [to, setTo] = useState("دبي");
-  const [date, setDate] = useState("");
-  const [pax, setPax] = useState(1);
-  const valid = from.length > 1 && to.length > 1 && date;
-
-  return (
-    <section id="search" className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
-        <SectionHeader eyebrow="ابحث واحجز" title="ابدأ بالبحث عن رحلتك" desc="نتائج فورية، أسعار مُحدّثة لحظيًا من شبكة آمنة متعددة المصادر." />
-
-        <div className="mt-12 brushed-metal rounded-3xl p-1 glow-gold">
-          <div className="bg-card/80 backdrop-blur-xl rounded-[22px] p-8">
-            <div className="grid md:grid-cols-5 gap-4">
-              <Field icon={MapPin} label="من" value={from} onChange={setFrom} valid={from.length>1} />
-              <Field icon={MapPin} label="إلى"  value={to}   onChange={setTo}   valid={to.length>1} />
-              <Field icon={Calendar} label="التاريخ" value={date} onChange={setDate} type="date" valid={!!date} />
-              <Field icon={Users} label="المسافرون" value={String(pax)} onChange={(v: string)=>setPax(+v||1)} type="number" valid={pax>0}/>
-              <button disabled={!valid}
-                className="rounded-xl font-bold text-background disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition"
-                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
-                <Search className="w-5 h-5" /> بحث
-              </button>
-            </div>
-            <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              بياناتك مشفّرة بـ AES‑256 ومحققة من جهة الخادم.
-            </div>
-          </div>
-        </div>
-
-        {/* Comparison table */}
-        <div className="mt-10 brushed-metal rounded-2xl p-1">
-          <div className="bg-card/70 rounded-[14px] overflow-hidden">
-            <div className="grid grid-cols-6 px-6 py-4 text-xs text-amber-300 border-b border-amber-500/20 font-semibold">
-              <div>شركة الطيران</div><div>المدة</div><div>التوقفات</div><div>الفئة</div><div>السعر</div><div></div>
-            </div>
-            {[
-              { a: "الخطوط السعودية", d: "5س 20د", s: "مباشرة", c: "اقتصادية", p: "1,499 ر.س" },
-              { a: "طيران الإمارات",  d: "5س 40د", s: "مباشرة", c: "اقتصادية", p: "1,720 ر.س" },
-              { a: "القطرية",         d: "8س 10د", s: "توقف 1", c: "أعمال",    p: "5,200 ر.س" },
-            ].map((r,i)=>(
-              <div key={i} className="grid grid-cols-6 px-6 py-4 items-center text-sm border-b border-amber-500/10 hover:bg-amber-500/5 transition">
-                <div className="font-semibold">{r.a}</div>
-                <div className="text-muted-foreground">{r.d}</div>
-                <div className="text-muted-foreground">{r.s}</div>
-                <div className="text-muted-foreground">{r.c}</div>
-                <div className="gold-text font-bold">{r.p}</div>
-                <button className="justify-self-end gold-border px-4 py-1.5 rounded-lg text-xs font-semibold text-amber-200">
-                  احجز
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Field({ icon: Icon, label, value, onChange, type = "text", valid }: any) {
-  return (
-    <label className="block">
-      <span className="text-xs text-muted-foreground mb-1.5 block">{label}</span>
-      <div className="relative">
-        <Icon className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400/70" />
-        <input
-          type={type}
-          value={value}
-          onChange={(e)=>onChange(e.target.value)}
-          className="w-full bg-background/60 border border-amber-500/30 rounded-xl pr-10 pl-9 py-3 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition"
-        />
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400/70" />
-        {valid && <CheckCircle2 className="absolute left-9 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-400" />}
-      </div>
-    </label>
-  );
-}
-
 function Destinations() {
   return (
     <section id="destinations" className="py-24">
@@ -311,23 +226,19 @@ function Destinations() {
         <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {destinations.map((d, i) => (
             <article key={i} className="dest-card group relative rounded-2xl overflow-hidden gold-border bg-card/40">
-              {/* Suitcase handle on hover */}
               <div className="handle absolute top-3 left-1/2 -translate-x-1/2 w-20 h-7 border-[5px] rounded-t-full z-10"
                    style={{ borderColor: "#d9a441", borderBottom: "none", boxShadow: "0 0 12px rgba(217,164,65,.6)" }} />
-              <div className="overflow-hidden h-64">
-                <img src={d.img} alt={d.name} loading="lazy" width={800} height={1024} className="w-full h-full object-cover" />
+              <div className="overflow-hidden h-72">
+                <img src={d.img} alt={d.name} loading="lazy" width={1024} height={1024}
+                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
               </div>
-              <div className="p-5 flex items-center justify-between">
-                <div>
-                  <h3 className="font-bold text-lg">{d.name}</h3>
-                  <p className="text-xs text-muted-foreground">{d.country}</p>
-                </div>
-                <div className="text-left">
-                  <div className="text-xs text-muted-foreground">يبدأ من</div>
-                  <div className="gold-text font-black text-lg">{d.price} ر.س</div>
-                </div>
+              <div className="absolute bottom-0 inset-x-0 p-5 z-10">
+                <h3 className="font-black text-2xl gold-text">{d.name}</h3>
+                <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-1">
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" /> {d.country}
+                </p>
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent pointer-events-none" />
             </article>
           ))}
         </div>
@@ -337,15 +248,119 @@ function Destinations() {
 }
 
 function Reviews() {
+  const [list, setList] = useState(initialReviews);
+  const [name, setName] = useState("");
+  const [text, setText] = useState("");
+  const [rating, setRating] = useState(5);
+  const [hover, setHover] = useState(0);
+
+  const valid = name.trim().length >= 2 && text.trim().length >= 10;
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!valid) return;
+    setList([{ name: name.trim(), role: "عميل", text: text.trim(), rating }, ...list]);
+    setName(""); setText(""); setRating(5);
+  };
+
   return (
     <section id="reviews" className="py-24">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader eyebrow="آراء عملائنا" title="رضاهم هو إنجازنا" desc="آلاف المسافرين يثقون بنا في كل رحلة." />
+
+        {/* Review form */}
+        <div className="mt-12 brushed-metal rounded-3xl p-1 glow-gold max-w-3xl mx-auto">
+          <form onSubmit={submit} className="bg-card/85 backdrop-blur-xl rounded-[22px] p-7 space-y-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                   style={{ background: "linear-gradient(135deg,rgba(244,210,122,.15),rgba(182,125,42,.1))", border: "1px solid rgba(244,210,122,.3)" }}>
+                <Sparkles className="w-5 h-5 text-amber-300" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">شاركنا تجربتك</h3>
+                <p className="text-xs text-muted-foreground">رأيك يهمّنا ويساعد المسافرين الآخرين</p>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <label className="block">
+                <span className="text-xs text-muted-foreground mb-1.5 block">اسمك</span>
+                <div className="relative">
+                  <User className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-amber-400/70" />
+                  <input
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="مثال: محمد العتيبي"
+                    maxLength={60}
+                    className="w-full bg-background/60 border border-amber-500/30 rounded-xl pr-10 pl-3 py-3 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition"
+                  />
+                </div>
+              </label>
+
+              <div>
+                <span className="text-xs text-muted-foreground mb-1.5 block">تقييمك</span>
+                <div className="flex items-center gap-1 bg-background/60 border border-amber-500/30 rounded-xl px-3 py-3"
+                     onMouseLeave={() => setHover(0)}>
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const v = i + 1;
+                    const active = (hover || rating) >= v;
+                    return (
+                      <button
+                        type="button"
+                        key={v}
+                        onClick={() => setRating(v)}
+                        onMouseEnter={() => setHover(v)}
+                        className="transition-transform hover:scale-125"
+                      >
+                        <Star className={`w-6 h-6 ${active ? "fill-amber-400 text-amber-400" : "text-amber-500/30"}`} />
+                      </button>
+                    );
+                  })}
+                  <span className="mr-auto text-xs text-muted-foreground">{rating}/5</span>
+                </div>
+              </div>
+            </div>
+
+            <label className="block">
+              <span className="text-xs text-muted-foreground mb-1.5 block">تقييمك بالتفصيل</span>
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="اكتب رأيك عن تجربتك مع الرحال برو..."
+                maxLength={500}
+                rows={4}
+                className="w-full bg-background/60 border border-amber-500/30 rounded-xl px-4 py-3 text-sm focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 transition resize-none"
+              />
+              <div className="text-[11px] text-muted-foreground mt-1 text-left">{text.length}/500</div>
+            </label>
+
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                يتم مراجعة التقييمات قبل النشر
+              </div>
+              <button
+                type="submit"
+                disabled={!valid}
+                className="rounded-xl font-bold text-background px-7 py-3 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 transition relative overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}
+              >
+                <span className="relative z-10 flex items-center gap-2">
+                  أرسل تقييمك <Send className="w-4 h-4" />
+                </span>
+                <span className="absolute inset-0 shimmer" />
+              </button>
+            </div>
+          </form>
+        </div>
+
         <div className="mt-14 grid md:grid-cols-3 gap-6">
-          {reviews.map((r, i) => (
+          {list.map((r, i) => (
             <div key={i} className="gold-border rounded-2xl p-7 bg-card/40 backdrop-blur-sm">
               <div className="flex gap-1 mb-4">
-                {Array.from({length:5}).map((_,j)=><Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400"/>)}
+                {Array.from({length:5}).map((_,j)=>(
+                  <Star key={j} className={`w-4 h-4 ${j < r.rating ? "fill-amber-400 text-amber-400" : "text-amber-500/30"}`}/>
+                ))}
               </div>
               <p className="text-foreground/90 leading-relaxed">{r.text}</p>
               <div className="mt-6 flex items-center gap-3">
