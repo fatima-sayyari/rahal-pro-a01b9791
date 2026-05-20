@@ -4,28 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -45,100 +28,144 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --font-display: "Cairo", "Tajawal", system-ui, sans-serif;
+  --font-body: "Tajawal", "Cairo", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --radius: 0.75rem;
+  --background: oklch(0.16 0.012 60);
+  --foreground: oklch(0.95 0.02 80);
+  --card: oklch(0.20 0.014 60);
+  --card-foreground: oklch(0.95 0.02 80);
+  --popover: oklch(0.18 0.012 60);
+  --popover-foreground: oklch(0.95 0.02 80);
+  --primary: oklch(0.78 0.13 80);
+  --primary-foreground: oklch(0.16 0.012 60);
+  --secondary: oklch(0.25 0.015 60);
+  --secondary-foreground: oklch(0.95 0.02 80);
+  --muted: oklch(0.22 0.012 60);
+  --muted-foreground: oklch(0.72 0.03 80);
+  --accent: oklch(0.78 0.13 80);
+  --accent-foreground: oklch(0.16 0.012 60);
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(0.98 0.003 247);
+  --border: oklch(0.30 0.02 70 / 60%);
+  --input: oklch(0.25 0.015 60);
+  --ring: oklch(0.78 0.13 80);
+  --gold: oklch(0.82 0.14 82);
+  --gold-soft: oklch(0.88 0.11 85);
+  --gold-deep: oklch(0.55 0.13 70);
 }
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
-}
+.dark { color-scheme: dark; }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
+  * { border-color: var(--color-border); }
+  html { color-scheme: dark; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.30 0.06 75 / 0.5), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 90% 30%, oklch(0.35 0.10 70 / 0.25), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 10% 70%, oklch(0.30 0.06 80 / 0.2), transparent 60%);
+    background-attachment: fixed;
   }
+  h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
 }
+
+.gold-text {
+  background: linear-gradient(135deg, #f4d27a 0%, #d9a441 25%, #f6e3a3 50%, #b67d2a 75%, #f4d27a 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldShift 6s ease-in-out infinite;
+}
+@keyframes goldShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gold-border {
+  position: relative;
+  background: linear-gradient(var(--card), var(--card)) padding-box,
+              linear-gradient(135deg, #f4d27a, #8a5a1f 40%, #f6e3a3 60%, #b67d2a) border-box;
+  border: 1px solid transparent;
+}
+
+.brushed-metal {
+  background:
+    repeating-linear-gradient(90deg, oklch(0.22 0.012 60) 0px, oklch(0.24 0.013 62) 1px, oklch(0.21 0.011 60) 2px, oklch(0.23 0.012 61) 3px),
+    linear-gradient(180deg, oklch(0.26 0.015 70) 0%, oklch(0.18 0.012 60) 100%);
+}
+
+.suitcase-leather {
+  background:
+    radial-gradient(ellipse at 30% 20%, oklch(0.28 0.02 60 / 0.8), transparent 60%),
+    repeating-linear-gradient(45deg, oklch(0.15 0.01 50) 0px, oklch(0.17 0.012 55) 2px, oklch(0.14 0.01 50) 4px),
+    linear-gradient(135deg, oklch(0.18 0.012 55), oklch(0.12 0.008 50));
+}
+
+.glow-gold { box-shadow: 0 0 40px -8px rgba(244, 210, 122, 0.45), inset 0 0 20px -10px rgba(244,210,122,0.2); }
+
+@keyframes float-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+@keyframes plane-trail {
+  0% { stroke-dashoffset: 1000; opacity: 0; }
+  20% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+.path-trail { stroke-dasharray: 1000; animation: plane-trail 4s ease-out forwards; }
+
+@keyframes plane-fly {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 1; }
+}
+.plane-flying { animation: plane-fly 8s linear infinite; }
+
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spin-slow 30s linear infinite; }
+
+@keyframes pulse-dot { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+@keyframes fade-up { from {opacity:0; transform:translateY(20px)} to {opacity:1; transform:translateY(0)} }
+.fade-up { animation: fade-up .8s ease-out both; }
+
+@keyframes shimmer { 0% {background-position: -200% 0;} 100% {background-position: 200% 0;} }
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(244,210,122,.15) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Suitcase scroll-portal */
+.suitcase-portal { transform-style: preserve-3d; perspective: 1200px; }
+.suitcase-lid {
+  transform-origin: top center;
+  transition: transform 1.2s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Hover service card animations */
+.service-card .icon-wrap { transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.service-card:hover .plane-icon { transform: translate(20px,-20px) rotate(-25deg); }
+.service-card:hover .bed-icon { transform: translateY(-6px); }
+.service-card:hover .palm-icon { transform: rotate(-8deg) scale(1.1); }
+.service-card:hover .luggage-icon { transform: translateX(8px); }
+
+/* Destination card */
+.dest-card .handle { opacity: 0; transform: translateY(-6px); transition: all .5s; }
+.dest-card:hover .handle { opacity: 1; transform: translateY(0); }
+.dest-card img, .dest-card .imgbg { transition: transform .8s; }
+.dest-card:hover img, .dest-card:hover .imgbg { transform: scale(1.08); }
+
+/* Scroll-driven transforms */
+.scroll-rotate { transition: transform .1s linear; }
