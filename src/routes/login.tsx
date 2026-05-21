@@ -131,7 +131,7 @@ function LoginPage() {
                   icon={Phone}
                   type="tel"
                   label="رقم الجوال"
-                  placeholder="+966 5X XXX XXXX"
+                  placeholder="+967 7X XXX XXXX"
                   value={phone}
                   onChange={(v: string) => { setPhone(v); setResult(initialResult); }}
                   clientValid={phoneValid}
