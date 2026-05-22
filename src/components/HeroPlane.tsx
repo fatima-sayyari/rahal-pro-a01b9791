@@ -1,31 +1,36 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Plane as PlaneIcon, MapPin, Calendar, Users, Search, ShieldCheck } from "lucide-react";
+import { MapPin, Calendar, Users, Search, ShieldCheck } from "lucide-react";
 
 /**
- * Cinematic hero inspired by the "Flying Private — Made Simple" reference.
- * - Front-view airplane centered, scales/zooms forward on mount + scroll
- * - Split mega-typography: right & left of the plane
- * - Drifting clouds parallax
- * - Floating glass search bar at bottom
+ * Cinematic hero — gold private jet takeoff sequence.
+ * Stage 1 (0 – 1.6s): plane lifts off (translateY from +260 to 0, scale 0.4 → 1)
+ * Stage 2 (1.6s+):   texts, ribbon and search bar fade/slide in
+ * Stage 3 (scroll):  plane keeps zooming forward as user scrolls
  */
 export function HeroPlane() {
   const [scroll, setScroll] = useState(0);
-  const [mounted, setMounted] = useState(0);
+  const [takeoff, setTakeoff] = useState(0); // 0 → 1 over ~1.6s
+  const [reveal, setReveal] = useState(0); // texts reveal 0 → 1 after takeoff
 
   useEffect(() => {
     const onScroll = () => setScroll(Math.min(1, window.scrollY / 600));
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    // mount-in animation (0 -> 1 over ~1.4s)
+
     let raf = 0;
     const start = performance.now();
+    const TAKEOFF_MS = 1600;
+    const REVEAL_DELAY = 1200;
+    const REVEAL_MS = 900;
     const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / 1400);
-      // ease-out cubic
-      const e = 1 - Math.pow(1 - p, 3);
-      setMounted(e);
-      if (p < 1) raf = requestAnimationFrame(tick);
+      const elapsed = t - start;
+      const tp = Math.min(1, elapsed / TAKEOFF_MS);
+      // ease-out cubic for liftoff
+      setTakeoff(1 - Math.pow(1 - tp, 3));
+      const rp = Math.min(1, Math.max(0, (elapsed - REVEAL_DELAY) / REVEAL_MS));
+      setReveal(1 - Math.pow(1 - rp, 3));
+      if (elapsed < TAKEOFF_MS + REVEAL_DELAY + REVEAL_MS) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => {
@@ -34,14 +39,13 @@ export function HeroPlane() {
     };
   }, []);
 
-  // Plane: starts small/far, zooms forward
-  const planeScale = 0.55 + mounted * 0.55 + scroll * 0.4; // 0.55 → 1.1 → 1.5
-  const planeY = (1 - mounted) * 80 - scroll * 60;
-  const planeRot = (1 - mounted) * -8;
+  // Takeoff: starts low on runway, scales up, slight roll
+  const planeScale = 0.4 + takeoff * 0.7 + scroll * 0.4; // 0.4 → 1.1 → 1.5
+  const planeY = (1 - takeoff) * 280 - scroll * 60; // rises from below
+  const planeRot = (1 - takeoff) * 12 - scroll * 4; // nose-up on takeoff
+  const planeBlur = (1 - takeoff) * 4; // motion blur eases out
 
-  // Typography parallax (split apart as plane comes forward)
-  const textSplit = mounted * 1 + scroll * 0.4;
-  const textOpacity = mounted;
+  const textSplit = reveal + scroll * 0.4;
 
   return (
     <section className="relative min-h-screen overflow-hidden flex items-center justify-center pt-24 pb-32">
@@ -54,6 +58,17 @@ export function HeroPlane() {
         }}
       />
 
+      {/* Runway light streaks during takeoff */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 bottom-0 w-[120%] h-[40%] -z-10 pointer-events-none"
+        style={{
+          opacity: (1 - takeoff) * 0.6,
+          background:
+            "linear-gradient(to top, rgba(244,210,122,0.25), transparent 80%)",
+          filter: "blur(20px)",
+        }}
+      />
+
       {/* Drifting clouds */}
       <Clouds />
 
@@ -62,18 +77,18 @@ export function HeroPlane() {
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full -z-10 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(244,210,122,0.45) 0%, rgba(217,164,65,0.2) 35%, transparent 70%)",
-          opacity: 0.6 + mounted * 0.4,
+            "radial-gradient(circle, rgba(244,210,122,0.5) 0%, rgba(217,164,65,0.22) 35%, transparent 70%)",
+          opacity: 0.4 + takeoff * 0.6,
         }}
       />
 
-      {/* Mega split typography */}
+      {/* Mega split typography — appears after takeoff */}
       <div className="absolute inset-0 flex items-center justify-between px-6 md:px-16 pointer-events-none select-none">
         <div
           className="text-right"
           style={{
-            transform: `translateX(${-textSplit * 40}px)`,
-            opacity: textOpacity,
+            transform: `translateX(${-textSplit * 40 - (1 - reveal) * 60}px)`,
+            opacity: reveal,
             transition: "opacity .6s",
           }}
         >
@@ -93,20 +108,16 @@ export function HeroPlane() {
         <div
           className="text-left"
           style={{
-            transform: `translateX(${textSplit * 40}px)`,
-            opacity: textOpacity,
+            transform: `translateX(${textSplit * 40 + (1 - reveal) * 60}px)`,
+            opacity: reveal,
             transition: "opacity .6s",
           }}
         >
           <div
-            className="font-black leading-[0.85] tracking-tight"
+            className="font-black leading-[0.85] tracking-tight gold-text"
             style={{
               fontSize: "clamp(60px, 11vw, 180px)",
-              background: "linear-gradient(180deg, #fff 0%, #d9d4c4 60%, #b9a978 100%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-              textShadow: "0 10px 60px rgba(255,255,255,.1)",
+              textShadow: "0 10px 60px rgba(244,210,122,.25)",
             }}
           >
             برو
@@ -120,13 +131,13 @@ export function HeroPlane() {
         </div>
       </div>
 
-      {/* Front-view airplane */}
+      {/* Front-view airplane — takes off first */}
       <div
         className="relative z-10"
         style={{
           transform: `translateY(${planeY}px) scale(${planeScale}) rotate(${planeRot}deg)`,
           transition: "transform .08s linear",
-          filter: `drop-shadow(0 40px 60px rgba(0,0,0,.7)) drop-shadow(0 0 40px rgba(244,210,122,.3))`,
+          filter: `drop-shadow(0 40px 60px rgba(0,0,0,.7)) drop-shadow(0 0 50px rgba(244,210,122,.45)) blur(${planeBlur}px)`,
         }}
       >
         <FrontPlaneSVG />
@@ -135,20 +146,20 @@ export function HeroPlane() {
       {/* Sub-headline + ribbon */}
       <div
         className="absolute left-1/2 -translate-x-1/2 z-20 text-center px-6"
-        style={{ bottom: "180px", opacity: mounted }}
+        style={{ bottom: "180px", opacity: reveal, transform: `translate(-50%, ${(1 - reveal) * 20}px)` }}
       >
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-400/30 bg-black/40 backdrop-blur-md text-amber-200 text-xs">
           <ShieldCheck className="w-3.5 h-3.5" /> منصة السفر الفاخرة الأولى عربياً
         </div>
       </div>
 
-      {/* Floating search bar (like reference) */}
+      {/* Floating search bar */}
       <div
         className="absolute left-1/2 -translate-x-1/2 z-20 w-[min(1100px,94vw)]"
         style={{
           bottom: "40px",
-          transform: `translate(-50%, ${(1 - mounted) * 40}px)`,
-          opacity: mounted,
+          transform: `translate(-50%, ${(1 - reveal) * 60}px)`,
+          opacity: reveal,
         }}
       >
         <div
@@ -236,7 +247,7 @@ function CloudSVG() {
   );
 }
 
-/** Detailed front-view private jet inspired by the reference video. */
+/** Front-view private jet — fully gold, color-matched to the logo. */
 function FrontPlaneSVG() {
   return (
     <svg
@@ -246,81 +257,117 @@ function FrontPlaneSVG() {
       style={{ width: "min(720px, 80vw)", height: "auto" }}
     >
       <defs>
-        <linearGradient id="fuselage" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fafafa" />
-          <stop offset="50%" stopColor="#cfcfd2" />
-          <stop offset="100%" stopColor="#6e6e74" />
+        {/* Polished gold body with realistic highlight */}
+        <linearGradient id="goldFuselage" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff4c8" />
+          <stop offset="22%" stopColor="#f6e3a3" />
+          <stop offset="50%" stopColor="#d9a441" />
+          <stop offset="78%" stopColor="#a87324" />
+          <stop offset="100%" stopColor="#6a4615" />
         </linearGradient>
-        <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#9a9aa0" />
-          <stop offset="60%" stopColor="#3d3d42" />
-          <stop offset="100%" stopColor="#15151a" />
+        <linearGradient id="goldFuselageSide" x1="0" x2="1">
+          <stop offset="0%" stopColor="#8a5a1f" />
+          <stop offset="50%" stopColor="#f6e3a3" />
+          <stop offset="100%" stopColor="#8a5a1f" />
+        </linearGradient>
+        <linearGradient id="goldWing" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f4d27a" />
+          <stop offset="50%" stopColor="#b67d2a" />
+          <stop offset="100%" stopColor="#4a300d" />
+        </linearGradient>
+        <linearGradient id="goldEngine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f6e3a3" />
+          <stop offset="55%" stopColor="#a87324" />
+          <stop offset="100%" stopColor="#3a2308" />
         </linearGradient>
         <linearGradient id="cockpit" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1b2230" />
           <stop offset="100%" stopColor="#0a0d14" />
         </linearGradient>
-        <linearGradient id="engine" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#3a3a40" />
-          <stop offset="100%" stopColor="#0a0a0e" />
-        </linearGradient>
         <radialGradient id="engineGlow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0%" stopColor="#f4d27a" stopOpacity="0.9" />
-          <stop offset="60%" stopColor="#d9a441" stopOpacity="0.3" />
+          <stop offset="0%" stopColor="#fff4c8" stopOpacity="1" />
+          <stop offset="50%" stopColor="#f4d27a" stopOpacity="0.55" />
           <stop offset="100%" stopColor="transparent" />
         </radialGradient>
         <linearGradient id="goldTrim" x1="0" x2="1">
-          <stop offset="0%" stopColor="#f6e3a3" />
+          <stop offset="0%" stopColor="#fff4c8" />
           <stop offset="50%" stopColor="#d9a441" />
-          <stop offset="100%" stopColor="#b67d2a" />
+          <stop offset="100%" stopColor="#6a4615" />
         </linearGradient>
+        <filter id="goldShine">
+          <feGaussianBlur stdDeviation="0.6" />
+        </filter>
       </defs>
 
-      {/* Wings (behind fuselage) */}
+      {/* Wings */}
       <path
         d="M 60 260 L 230 235 L 280 250 L 280 275 L 220 285 L 60 290 Z"
-        fill="url(#wing)"
-        stroke="#0a0a0e"
+        fill="url(#goldWing)"
+        stroke="#3a2308"
         strokeWidth="1"
       />
       <path
         d="M 540 260 L 370 235 L 320 250 L 320 275 L 380 285 L 540 290 Z"
-        fill="url(#wing)"
-        stroke="#0a0a0e"
+        fill="url(#goldWing)"
+        stroke="#3a2308"
         strokeWidth="1"
       />
+      {/* Wing highlights */}
+      <path d="M 70 263 L 228 240 L 278 252" stroke="#fff4c8" strokeWidth="1.2" fill="none" opacity="0.6" />
+      <path d="M 530 263 L 372 240 L 322 252" stroke="#fff4c8" strokeWidth="1.2" fill="none" opacity="0.6" />
       {/* Wing tip lights */}
       <circle cx="62" cy="275" r="3" fill="#ff5252" />
       <circle cx="538" cy="275" r="3" fill="#4ade80" />
 
-      {/* Engines under wings */}
+      {/* Engines */}
       <g>
-        <ellipse cx="180" cy="320" rx="38" ry="42" fill="url(#engine)" stroke="#0a0a0e" strokeWidth="1.5" />
-        <ellipse cx="180" cy="320" rx="28" ry="32" fill="#000" />
-        <circle cx="180" cy="320" r="22" fill="url(#engineGlow)" opacity="0.6" />
-        <circle cx="180" cy="320" r="6" fill="#f4d27a" opacity="0.9" />
+        <ellipse cx="180" cy="320" rx="38" ry="42" fill="url(#goldEngine)" stroke="#3a2308" strokeWidth="1.5" />
+        <ellipse cx="180" cy="320" rx="28" ry="32" fill="#1a0f04" />
+        <circle cx="180" cy="320" r="22" fill="url(#engineGlow)" />
+        <circle cx="180" cy="320" r="7" fill="#fff4c8" />
+        <ellipse cx="170" cy="305" rx="6" ry="14" fill="#fff4c8" opacity="0.35" />
       </g>
       <g>
-        <ellipse cx="420" cy="320" rx="38" ry="42" fill="url(#engine)" stroke="#0a0a0e" strokeWidth="1.5" />
-        <ellipse cx="420" cy="320" rx="28" ry="32" fill="#000" />
-        <circle cx="420" cy="320" r="22" fill="url(#engineGlow)" opacity="0.6" />
-        <circle cx="420" cy="320" r="6" fill="#f4d27a" opacity="0.9" />
+        <ellipse cx="420" cy="320" rx="38" ry="42" fill="url(#goldEngine)" stroke="#3a2308" strokeWidth="1.5" />
+        <ellipse cx="420" cy="320" rx="28" ry="32" fill="#1a0f04" />
+        <circle cx="420" cy="320" r="22" fill="url(#engineGlow)" />
+        <circle cx="420" cy="320" r="7" fill="#fff4c8" />
+        <ellipse cx="410" cy="305" rx="6" ry="14" fill="#fff4c8" opacity="0.35" />
       </g>
 
-      {/* Fuselage (front view, tapering body) */}
+      {/* Fuselage — gold body */}
       <path
         d="M 270 60 Q 300 50 330 60 L 345 240 Q 345 320 320 380 Q 300 395 280 380 Q 255 320 255 240 Z"
-        fill="url(#fuselage)"
-        stroke="#3a3a40"
+        fill="url(#goldFuselage)"
+        stroke="#3a2308"
         strokeWidth="1.5"
       />
-      {/* Gold pinstripe */}
+      {/* Side shading for 3D feel */}
+      <path
+        d="M 255 240 Q 255 320 280 380 Q 290 388 295 386 L 295 70 Q 282 66 270 70 Z"
+        fill="#000"
+        opacity="0.18"
+      />
+      <path
+        d="M 345 240 Q 345 320 320 380 Q 310 388 305 386 L 305 70 Q 318 66 330 70 Z"
+        fill="#fff4c8"
+        opacity="0.18"
+      />
+      {/* Bright vertical highlight */}
+      <path
+        d="M 298 80 Q 300 220 300 380"
+        stroke="#fff4c8"
+        strokeWidth="2"
+        fill="none"
+        opacity="0.55"
+        filter="url(#goldShine)"
+      />
+      {/* Gold pinstripes along edges */}
       <path
         d="M 258 240 Q 258 320 285 385 M 342 240 Q 342 320 315 385"
         stroke="url(#goldTrim)"
         strokeWidth="2"
         fill="none"
-        opacity="0.85"
       />
 
       {/* Cockpit windshield */}
@@ -328,28 +375,27 @@ function FrontPlaneSVG() {
         d="M 278 80 Q 300 70 322 80 L 328 130 Q 300 122 272 130 Z"
         fill="url(#cockpit)"
         stroke="#f4d27a"
-        strokeWidth="1"
-        opacity="0.95"
+        strokeWidth="1.2"
       />
-      <path d="M 285 90 Q 300 85 315 90 L 318 115 Q 300 110 282 115 Z" fill="#f4d27a" opacity="0.15" />
+      <path d="M 285 90 Q 300 85 315 90 L 318 115 Q 300 110 282 115 Z" fill="#fff4c8" opacity="0.22" />
 
-      {/* Tail fin behind */}
+      {/* Tail fin */}
       <path
         d="M 290 50 L 310 50 L 305 5 L 295 5 Z"
-        fill="url(#fuselage)"
-        stroke="#3a3a40"
+        fill="url(#goldFuselage)"
+        stroke="#3a2308"
         strokeWidth="1"
       />
       <line x1="300" y1="15" x2="300" y2="45" stroke="url(#goldTrim)" strokeWidth="1.5" />
 
       {/* Nose light */}
-      <circle cx="300" cy="385" r="4" fill="#fff8e0" opacity="0.9" />
+      <circle cx="300" cy="385" r="5" fill="#fff8e0" />
 
-      {/* Subtle window dots on body */}
+      {/* Cabin windows — small dark portholes */}
       {[170, 200, 230, 260, 290, 320, 350].map((y, i) => (
         <g key={i}>
-          <circle cx={272 + i * 0.3} cy={y} r="2.5" fill="#1b2230" opacity="0.7" />
-          <circle cx={328 - i * 0.3} cy={y} r="2.5" fill="#1b2230" opacity="0.7" />
+          <circle cx={272 + i * 0.3} cy={y} r="2.6" fill="#1a0f04" />
+          <circle cx={328 - i * 0.3} cy={y} r="2.6" fill="#1a0f04" />
         </g>
       ))}
     </svg>
