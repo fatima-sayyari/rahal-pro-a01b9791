@@ -5,8 +5,8 @@ import {
   Star, MapPin, Phone, Mail, Instagram, Twitter,
   Facebook, ArrowLeft, Sparkles, Globe, Send, User,
 } from "lucide-react";
-import { Suitcase } from "@/components/Suitcase";
 import { WorldMap } from "@/components/WorldMap";
+import { HeroPlane } from "@/components/HeroPlane";
 import logo from "@/assets/logo.jpeg";
 import dubai from "@/assets/dest-dubai.jpg";
 import maldives from "@/assets/dest-maldives.jpg";
