@@ -5,8 +5,7 @@ import {
   Star, MapPin, Phone, Mail, Instagram, Twitter,
   Facebook, ArrowLeft, Sparkles, Globe, Send, User,
 } from "lucide-react";
-import { Suitcase } from "@/components/Suitcase";
-import { WorldMap } from "@/components/WorldMap";
+import { HeroPlane } from "@/components/HeroPlane";
 import logo from "@/assets/logo.jpeg";
 import dubai from "@/assets/dest-dubai.jpg";
 import maldives from "@/assets/dest-maldives.jpg";
@@ -75,56 +74,7 @@ function Nav() {
 }
 
 function Hero() {
-  return (
-    <section className="relative pt-32 pb-20 min-h-screen flex items-center">
-      <div className="absolute inset-0 -z-10 opacity-50">
-        <WorldMap />
-      </div>
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center w-full">
-        <div className="fade-up">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/5 text-amber-300 text-xs mb-6">
-            <Sparkles className="w-3 h-3" /> منصة السفر الذكية الأولى عربياً
-          </div>
-          <h1 className="text-5xl md:text-6xl font-black leading-tight">
-            <span className="gold-text">رحال برو</span>
-            <br />
-            <span className="text-foreground/95">بوابتك للسفر الذكي</span>
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-lg">
-            رحلات طيران، فنادق فاخرة، وباقات سياحية مصممة بعناية —
-            كل ما يلزمك للسفر بأناقة في مكان واحد.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link to="/login" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden"
-               style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
-              <span className="relative z-10 flex items-center gap-2">ابدأ رحلتك <ArrowLeft className="w-4 h-4" /></span>
-              <span className="absolute inset-0 shimmer" />
-            </Link>
-            <a href="#services" className="gold-border px-7 py-3.5 rounded-xl font-semibold text-amber-200">
-              تعرف على خدماتنا
-            </a>
-          </div>
-          <div className="mt-10 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <Trust icon={ShieldCheck} text="مشفّر بالكامل" />
-            <Trust icon={Globe} text="+180 دولة" />
-            <Trust icon={Star} text="4.9/5 تقييم" />
-          </div>
-        </div>
-
-        <div className="relative">
-          <Suitcase />
-          <div className="absolute -bottom-4 left-0 right-0 grid grid-cols-4 gap-2 fade-up" style={{ animationDelay: ".5s" }}>
-            {services.map((s, i) => (
-              <div key={i} className="gold-border rounded-xl p-3 text-center backdrop-blur-sm bg-card/50">
-                <s.icon className="w-5 h-5 mx-auto text-amber-300" />
-                <div className="text-[10px] mt-1 text-muted-foreground truncate">{s.title}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <HeroPlane />;
 }
 
 function Trust({ icon: Icon, text }: { icon: any; text: string }) {
