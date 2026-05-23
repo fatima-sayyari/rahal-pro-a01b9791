@@ -67,9 +67,9 @@ function Nav() {
           <a href="#destinations" className="hover:text-amber-300 transition">الوجهات</a>
           <a href="#reviews" className="hover:text-amber-300 transition">آراء العملاء</a>
         </nav>
-        <Link to="/login" className="gold-border px-5 py-2 rounded-lg text-sm font-semibold text-amber-200 hover:glow-gold transition">
-          تسجيل الدخول
-        </Link>
+        <a href="#destinations" className="gold-border px-5 py-2 rounded-lg text-sm font-semibold text-amber-200 hover:glow-gold transition">
+          استكشف الوجهات
+        </a>
       </div>
     </header>
   );
@@ -96,11 +96,11 @@ function Hero() {
             كل ما يلزمك للسفر بأناقة في مكان واحد.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
-            <Link to="/login" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden"
+            <a href="#destinations" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden inline-block"
                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
               <span className="relative z-10 flex items-center gap-2">ابدأ رحلتك <ArrowLeft className="w-4 h-4" /></span>
               <span className="absolute inset-0 shimmer" />
-            </Link>
+            </a>
             <a href="#services" className="gold-border px-7 py-3.5 rounded-xl font-semibold text-amber-200">
               تعرف على خدماتنا
             </a>
