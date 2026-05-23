@@ -4,6 +4,7 @@ import {
   Plane, Hotel, Palmtree, Briefcase, ShieldCheck,
   Star, MapPin, Phone, Mail, Instagram, Twitter,
   Facebook, ArrowLeft, Sparkles, Globe, Send, User,
+  MessageCircle, Headphones, Music2, Youtube,
 } from "lucide-react";
 import { Suitcase } from "@/components/Suitcase";
 import { WorldMap } from "@/components/WorldMap";
@@ -404,18 +405,50 @@ function Footer() {
         <div>
           <div className="font-bold mb-4 text-amber-200">تواصل معنا</div>
           <div className="space-y-3 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-400"/> +966 50 000 0000</div>
-            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400"/> info@rahhalpro.sa</div>
-            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400"/> الرياض، المملكة العربية السعودية</div>
+            <a href="https://wa.me/967784140404" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-amber-300 transition">
+              <Phone className="w-4 h-4 text-amber-400"/> +967 784 140 404
+            </a>
+            <a href="https://wa.me/967782024040" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-amber-300 transition">
+              <Phone className="w-4 h-4 text-amber-400"/> +967 782 024 040
+            </a>
+            <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400"/> info@alrhalpro.com</div>
+            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400"/> اليمن — صنعاء</div>
           </div>
-          <div className="mt-5 flex gap-3">
-            {[Instagram, Twitter, Facebook].map((I, i) => (
-              <a key={i} href="#" className="w-10 h-10 rounded-lg gold-border flex items-center justify-center text-amber-300 hover:glow-gold transition">
-                <I className="w-4 h-4"/>
+
+          <div className="mt-6">
+            <div className="text-xs text-amber-200/80 mb-2 font-semibold">خدمة العملاء على واتساب</div>
+            <div className="flex gap-2">
+              <a href="https://wa.me/967784140404" target="_blank" rel="noreferrer"
+                 className="flex-1 flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold text-background hover:scale-[1.02] transition"
+                 style={{ background: "linear-gradient(135deg,#25D366,#128C7E)" }}>
+                <MessageCircle className="w-4 h-4"/> دردشة فورية
               </a>
-            ))}
+              <a href="tel:+967784140404"
+                 className="w-11 h-11 rounded-xl gold-border flex items-center justify-center text-amber-300 hover:glow-gold transition" aria-label="اتصال">
+                <Headphones className="w-4 h-4"/>
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="text-xs text-amber-200/80 mb-2 font-semibold">تابعنا</div>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { I: Instagram, href: "https://www.instagram.com/alrhal_pro", label: "Instagram" },
+                { I: Facebook,  href: "https://www.facebook.com/share/1B77oRdQe3/", label: "Facebook" },
+                { I: Twitter,   href: "https://x.com/alrhalpro", label: "X" },
+                { I: Youtube,   href: "https://www.youtube.com/@Alrhaal_pro", label: "YouTube" },
+                { I: Music2,    href: "https://tiktok.com/@alrhaalpro", label: "TikTok" },
+              ].map(({ I, href, label }) => (
+                <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label}
+                   className="w-10 h-10 rounded-lg gold-border flex items-center justify-center text-amber-300 hover:glow-gold hover:-translate-y-0.5 transition">
+                  <I className="w-4 h-4"/>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
+
       </div>
       <div className="border-t border-amber-500/20 py-5 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} الرحال برو. جميع الحقوق محفوظة.
