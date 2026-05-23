@@ -169,8 +169,3 @@
 
 /* Scroll-driven transforms */
 .scroll-rotate { transition: transform .1s linear; }
-
-@keyframes cloud-drift {
-  0% { transform: translateX(-20vw) scale(var(--s, 1)); }
-  100% { transform: translateX(120vw) scale(var(--s, 1)); }
-}
