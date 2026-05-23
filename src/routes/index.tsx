@@ -4,6 +4,7 @@ import {
   Plane, Hotel, Palmtree, Briefcase, ShieldCheck,
   Star, MapPin, Phone, Mail, Instagram, Twitter,
   Facebook, ArrowLeft, Sparkles, Globe, Send, User,
+  MessageCircle, Headphones, Music2, Youtube,
 } from "lucide-react";
 import { Suitcase } from "@/components/Suitcase";
 import { WorldMap } from "@/components/WorldMap";
