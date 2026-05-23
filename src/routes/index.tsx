@@ -412,7 +412,7 @@ function Footer() {
               <Phone className="w-4 h-4 text-amber-400"/> +967 782 024 040
             </a>
             <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400"/> info@alrhalpro.com</div>
-            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400"/> اليمن — صنعاء</div>
+            <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-amber-400"/> اليمن — عدن</div>
           </div>
 
           <div className="mt-6">
