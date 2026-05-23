@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:migrate:local": "wrangler d1 migrations apply rahal-pro-reviews --local",
+    "db:migrate:remote": "wrangler d1 migrations apply rahal-pro-reviews --remote"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
@@ -67,6 +69,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260523.1",
     "@eslint/js": "^9.32.0",
     "@lovable.dev/vite-tanstack-config": "^1.7.0",
     "@types/node": "^22.16.5",
@@ -82,6 +85,7 @@
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "wrangler": "^4.94.0"
   }
 }

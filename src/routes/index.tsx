@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { createReviewFn, getReviewsFn } from "@/lib/reviews/functions";
 import {
   Plane, Hotel, Palmtree, Briefcase, ShieldCheck,
   Star, MapPin, Phone, Mail, Instagram, Twitter,
@@ -32,12 +34,6 @@ const destinations = [
   { img: paris,    name: "باريس",    country: "فرنسا" },
   { img: makkah,   name: "مكة المكرمة", country: "السعودية" },
   { img: bali,     name: "بالي",     country: "إندونيسيا" },
-];
-
-const initialReviews = [
-  { name: "نورة العتيبي", role: "مسافرة دائمة", text: "تجربة حجز سلسة ودعم على مدار الساعة. الرحال برو وفّر لي رحلة العمر إلى المالديف بأقل من المتوقع.", rating: 5 },
-  { name: "خالد الزهراني", role: "رجل أعمال",    text: "أحجز كل رحلات أعمالي عبر المنصة منذ سنتين، الواجهة فاخرة والعمليات في غاية الاحترافية.", rating: 5 },
-  { name: "سارة الحربي",   role: "مدوّنة سفر",   text: "الباقات السياحية فعلاً مدروسة بعناية. كل التفاصيل مهتم بها — حتى التوصيل من المطار.", rating: 5 },
 ];
 
 function Index() {
@@ -249,19 +245,44 @@ function Destinations() {
 }
 
 function Reviews() {
-  const [list, setList] = useState(initialReviews);
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [text, setText] = useState("");
   const [rating, setRating] = useState(5);
   const [hover, setHover] = useState(0);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  const reviewsQuery = useQuery({
+    queryKey: ["reviews"],
+    queryFn: () => getReviewsFn(),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (payload: { name: string; text: string; rating: number }) =>
+      createReviewFn({ data: payload }),
+    onSuccess: (result) => {
+      setFeedback({ type: "success", message: result.message });
+      setName("");
+      setText("");
+      setRating(5);
+      void queryClient.invalidateQueries({ queryKey: ["reviews"] });
+    },
+    onError: () => {
+      setFeedback({
+        type: "error",
+        message: "تعذّر إرسال التقييم. حاول مرة أخرى أو تواصل مع الدعم.",
+      });
+    },
+  });
 
   const valid = name.trim().length >= 2 && text.trim().length >= 10;
+  const list = reviewsQuery.data ?? [];
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!valid) return;
-    setList([{ name: name.trim(), role: "عميل", text: text.trim(), rating }, ...list]);
-    setName(""); setText(""); setRating(5);
+    if (!valid || createMutation.isPending) return;
+    setFeedback(null);
+    createMutation.mutate({ name: name.trim(), text: text.trim(), rating });
   };
 
   return (
@@ -342,22 +363,45 @@ function Reviews() {
               </div>
               <button
                 type="submit"
-                disabled={!valid}
+                disabled={!valid || createMutation.isPending}
                 className="rounded-xl font-bold text-background px-7 py-3 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 transition relative overflow-hidden"
                 style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  أرسل تقييمك <Send className="w-4 h-4" />
+                  {createMutation.isPending ? "جاري الإرسال..." : "أرسل تقييمك"}{" "}
+                  <Send className="w-4 h-4" />
                 </span>
                 <span className="absolute inset-0 shimmer" />
               </button>
             </div>
+
+            {feedback && (
+              <p
+                className={`text-sm rounded-xl px-4 py-3 ${
+                  feedback.type === "success"
+                    ? "bg-emerald-500/10 text-emerald-300 border border-emerald-500/30"
+                    : "bg-red-500/10 text-red-300 border border-red-500/30"
+                }`}
+              >
+                {feedback.message}
+              </p>
+            )}
           </form>
         </div>
 
+        {reviewsQuery.isLoading && (
+          <p className="mt-14 text-center text-muted-foreground">جاري تحميل التقييمات...</p>
+        )}
+
+        {reviewsQuery.isError && (
+          <p className="mt-14 text-center text-red-300">
+            تعذّر تحميل التقييمات. تأكد من تشغيل قاعدة البيانات المحلية.
+          </p>
+        )}
+
         <div className="mt-14 grid md:grid-cols-3 gap-6">
-          {list.map((r, i) => (
-            <div key={i} className="gold-border rounded-2xl p-7 bg-card/40 backdrop-blur-sm">
+          {list.map((r) => (
+            <div key={r.id} className="gold-border rounded-2xl p-7 bg-card/40 backdrop-blur-sm">
               <div className="flex gap-1 mb-4">
                 {Array.from({length:5}).map((_,j)=>(
                   <Star key={j} className={`w-4 h-4 ${j < r.rating ? "fill-amber-400 text-amber-400" : "text-amber-500/30"}`}/>
