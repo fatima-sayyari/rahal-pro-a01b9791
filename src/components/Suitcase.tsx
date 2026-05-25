@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
  * 3D-styled suitcase that opens on scroll. Pure SVG + CSS transforms.
  * Acts as a "portal" — content beyond hero flows through it.
  */
-export function Suitcase() {
+export function Suitcase({ className = "w-[360px]" }: { className?: string }) {
   const [openDeg, setOpenDeg] = useState(0);
   const [rotY, setRotY] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -23,7 +23,7 @@ export function Suitcase() {
   }, []);
 
   return (
-    <div ref={ref} className="suitcase-portal relative mx-auto" style={{ width: 360, height: 360 }}>
+    <div ref={ref} className={`suitcase-portal relative mx-auto aspect-square ${className}`}>
       {/* Glow halo */}
       <div className="absolute inset-0 rounded-full blur-3xl opacity-60"
         style={{ background: "radial-gradient(circle, rgba(244,210,122,.45), transparent 65%)" }} />

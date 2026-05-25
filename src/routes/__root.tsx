@@ -72,11 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "الرحال برو — بوابتك للسفر الذكي" },
-      { name: "description", content: "الرحال برو: حجوزات طيران، فنادق، باقات سياحية وخدمات متكاملة بتجربة بصرية فاخرة." },
+      { title: "الرحال برو — للسفريات والتأشيرات" },
+      {
+        name: "description",
+        content:
+          "الرحال برو: تأشيرات وبرامج العمرة، تخليص فيز العمل والزيارات العائلية، تختيم الوثائق، استخراج الجوازات، وحجوزات السفر والباقات.",
+      },
       { name: "author", content: "Rahhal Pro" },
-      { property: "og:title", content: "الرحال برو — بوابتك للسفر الذكي" },
-      { property: "og:description", content: "حجوزات طيران، فنادق، باقات وخدمات سفر متكاملة." },
+      { property: "og:title", content: "الرحال برو — للسفريات والتأشيرات" },
+      {
+        property: "og:description",
+        content: "تأشيرات وعمرة، استخراج جوازات، معاملات رسمية، وحجوزات سفر — خدمة متكاملة من الرحال برو.",
+      },
       { property: "og:type", content: "website" },
     ],
     links: [

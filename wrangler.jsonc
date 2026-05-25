@@ -1,16 +1,23 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tanstack-start-app",
+  "name": "rahal-pro-test",
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "rahal-pro-reviews",
-      // Replace with your real id after: npx wrangler d1 create rahal-pro-reviews
-      "database_id": "00000000-0000-0000-0000-000000000001",
-      "migrations_dir": "migrations"
+  "env": {
+    "production": {
+      "name": "rahal-pro",
+      "workers_dev": false,
+      "routes": [
+        {
+          "pattern": "alrhalpro.com",
+          "custom_domain": true
+        },
+        {
+          "pattern": "www.alrhalpro.com",
+          "custom_domain": true
+        }
+      ]
     }
-  ]
+  }
 }
