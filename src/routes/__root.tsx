@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { WhatsAppFab } from "@/components/WhatsAppFab";
 
 function NotFoundComponent() {
   return (
@@ -85,6 +86,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "تأشيرات وعمرة، استخراج جوازات، معاملات رسمية، وحجوزات سفر — خدمة متكاملة من الرحال برو.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "ar_AR" },
+      { property: "og:site_name", content: "الرحال برو" },
+      // TODO: ضعي رابط صورة المشاركة الكامل بعد النشر، مثال: https://yourdomain.com/og.jpg
+      // { property: "og:image", content: "https://yourdomain.com/og.jpg" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#1a1410" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -94,6 +101,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
 
+  scripts: () => [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        name: "الرحال برو",
+        description: "تأشيرات وعمرة، استخراج جوازات، معاملات رسمية، وحجوزات سفر.",
+        telephone: ["+967784140404", "+967782024040"],
+        email: "info@alrhalpro.com",
+        address: { "@type": "PostalAddress", addressLocality: "عدن", addressCountry: "YE" },
+        sameAs: [
+          "https://www.instagram.com/alrhal_pro",
+          "https://x.com/alrhalpro",
+          "https://www.youtube.com/@Alrhaal_pro",
+          "https://tiktok.com/@alrhaalpro",
+        ],
+      }),
+    },
+  ],
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -121,6 +148,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <WhatsAppFab />
     </QueryClientProvider>
   );
 }

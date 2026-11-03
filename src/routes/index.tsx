@@ -1,10 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Palmtree, Briefcase, Users, Landmark, BookUser, Plane, ShieldCheck, CheckCircle,
   MapPin, Phone, Mail, Instagram, Twitter,
   Facebook, ArrowLeft, Sparkles, Globe,
   MessageCircle, Headphones, Music2, Youtube,
 } from "lucide-react";
+import { services, faqs } from "@/data/services";
+import { JourneyScene } from "@/components/JourneyScene";
+import { Reviews } from "@/components/Reviews";
+import { RequestForm } from "@/components/RequestForm";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Suitcase } from "@/components/Suitcase";
 import { WorldMap } from "@/components/WorldMap";
 import logo from "@/assets/logo.jpeg";
@@ -16,45 +21,6 @@ import makkah from "@/assets/dest-makkah.jpg";
 import bali from "@/assets/dest-bali.jpg";
 
 export const Route = createFileRoute("/")({ component: Index });
-
-const services = [
-  {
-    icon: Palmtree,
-    title: "تأشيرات وبرامج العمرة",
-    desc: "إصدار التأشيرات وتنظيم برامج العمرة الكاملة: تذاكر، إقامة، وتنسيق الرحلة للأفراد والعائلات.",
-    anim: "palm-icon",
-  },
-  {
-    icon: Briefcase,
-    title: "تخليص فيز العمل",
-    desc: "تخليص معاملات تأشيرات العمل من تجهيز الملف حتى الاستلام مع متابعة دقيقة.",
-    anim: "luggage-icon",
-  },
-  {
-    icon: Users,
-    title: "تخليص الزيارات العائلية",
-    desc: "إنهاء إجراءات زيارة الأقارب والعائلة بسرعة وفق المتطلبات الرسمية لكل دولة.",
-    anim: "bed-icon",
-  },
-  {
-    icon: Landmark,
-    title: "تختيم الوثائق الحكومية",
-    desc: "تخليص تختيم الوثائق بأنواعها في المرافق الحكومية بإجراءات موثوقة.",
-    anim: "plane-icon",
-  },
-  {
-    icon: BookUser,
-    title: "استخراج الجوازات",
-    desc: "إصدار وتجديد الجوازات بجميع أنواعها مع تجهيز الملف ومتابعة الإجراءات حتى التسليم.",
-    anim: "luggage-icon",
-  },
-  {
-    icon: Plane,
-    title: "حجوزات السفر والباقات",
-    desc: "تذاكر طيران، فنادق، وباقات سياحية مصممة بعناية لرحلة مريحة ومتكاملة.",
-    anim: "plane-icon",
-  },
-];
 
 const destinations = [
   { img: dubai,    name: "دبي",      country: "الإمارات" },
@@ -71,8 +37,11 @@ function Index() {
       <Nav />
       <Hero />
       <Services />
-      <JourneyPath />
+      <JourneyScene />
       <Destinations />
+      <Reviews />
+      <Faq />
+      <RequestForm />
       <Footer />
     </main>
   );
@@ -90,7 +59,7 @@ function Nav() {
           <a href="#services" className="hover:text-amber-300 transition">خدماتنا</a>
           <a href="#destinations" className="hover:text-amber-300 transition">الوجهات</a>
         </nav>
-        <a href="#services" className="gold-border px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold text-amber-200 hover:glow-gold transition shrink-0">
+        <a href="#request" className="gold-border px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold text-amber-200 hover:glow-gold transition shrink-0">
           اطلب خدمتك
         </a>
       </div>
@@ -119,7 +88,7 @@ function Hero() {
             استخراج الجوازات، وحجوزات الطيران والفنادق والباقات — كل ذلك من مكان واحد.
           </p>
           <div className="mt-6 md:mt-8 flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-3 sm:gap-4">
-            <a href="#services" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden inline-flex justify-center"
+            <a href="#request" className="group relative px-7 py-3.5 rounded-xl font-semibold text-background overflow-hidden inline-flex justify-center"
                style={{ background: "linear-gradient(135deg,#f6e3a3,#d9a441,#b67d2a)" }}>
               <span className="relative z-10 flex items-center gap-2">اطلب خدمتك <ArrowLeft className="w-4 h-4" /></span>
               <span className="absolute inset-0 shimmer" />
@@ -129,7 +98,7 @@ function Hero() {
             </a>
           </div>
           <div className="mt-6 md:mt-10 flex flex-wrap justify-center md:justify-start items-center gap-4 sm:gap-6 text-sm text-muted-foreground">
-            <Trust icon={ShieldCheck} text="مشفّر بالكامل" />
+            <Trust icon={ShieldCheck} text="متابعة حتى التسليم" />
             <Trust icon={Globe} text="+180 دولة" />
             <Trust icon={CheckCircle} text="خدمة موثوقة" />
           </div>
@@ -174,75 +143,18 @@ function Services() {
         />
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {services.map((s, i) => (
-            <div key={i} className="service-card group gold-border rounded-2xl p-6 hover:glow-gold transition-all duration-500 hover:-translate-y-2">
+            <Link key={i} to="/services/$slug" params={{ slug: s.slug }} className="service-card group gold-border rounded-2xl p-6 hover:glow-gold transition-all duration-500 hover:-translate-y-2 block">
               <div className="icon-wrap inline-flex w-14 h-14 items-center justify-center rounded-xl mb-5"
                    style={{ background: "linear-gradient(135deg,rgba(244,210,122,.15),rgba(182,125,42,.1))", border: "1px solid rgba(244,210,122,.3)" }}>
                 <s.icon className={`w-7 h-7 text-amber-300 ${s.anim}`} />
               </div>
               <h3 className="text-lg font-bold mb-2">{s.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              <div className="mt-5 flex items-center gap-2 text-amber-300 text-sm font-semibold opacity-0 group-hover:opacity-100 transition">
+              <div className="mt-5 flex items-center gap-2 text-amber-300 text-sm font-semibold md:opacity-0 md:group-hover:opacity-100 transition">
                 اكتشف المزيد <ArrowLeft className="w-3 h-3" />
               </div>
-            </div>
+            </Link>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function JourneyPath() {
-  return (
-    <section className="py-28 relative">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <SectionHeader eyebrow="مسار الخدمة" title="معاملتك بخطوات واضحة" desc="من استلام الطلب حتى إتمام الإجراء، نرافقك في كل مرحلة بشفافية واحترافية." align="start" />
-          <div className="mt-8 space-y-4">
-            {[
-              { step: "01", t: "تقديم الطلب", d: "تواصلي معنا وحددي نوع الخدمة المطلوبة." },
-              { step: "02", t: "تجهيز الملف", d: "مراجعة الوثائق واستكمال المتطلبات الرسمية." },
-              { step: "03", t: "متابعة المعاملة", d: "متابعة حالة الطلب لدى الجهات المختصة." },
-              { step: "04", t: "إتمام الخدمة", d: "تسليم النتيجة ودعم ما بعد الإنجاز." },
-            ].map((s) => (
-              <div key={s.step} className="flex items-start gap-4 gold-border rounded-xl p-4">
-                <div className="text-2xl font-black gold-text shrink-0 w-12">{s.step}</div>
-                <div>
-                  <div className="font-bold">{s.t}</div>
-                  <div className="text-sm text-muted-foreground">{s.d}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative h-[500px]">
-          <svg viewBox="0 0 400 500" className="w-full h-full">
-            <defs>
-              <linearGradient id="track" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#f6e3a3"/>
-                <stop offset="100%" stopColor="#b67d2a"/>
-              </linearGradient>
-              <filter id="g2"><feGaussianBlur stdDeviation="3"/></filter>
-            </defs>
-            <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
-                  stroke="url(#track)" strokeWidth="10" fill="none" opacity=".25" filter="url(#g2)"/>
-            <path d="M50 20 C 350 100, 50 250, 350 350 S 50 480, 200 500"
-                  stroke="url(#track)" strokeWidth="3" fill="none" strokeDasharray="6 6" className="path-trail"/>
-
-            {[[80,80],[330,180],[80,300],[330,420]].map(([x,y],i)=>(
-              <g key={i}>
-                <circle cx={x} cy={y} r="14" fill="#1a1410" stroke="url(#track)" strokeWidth="2"/>
-                <g transform={`translate(${x-8},${y-8}) scale(.7)`} fill="#f4d27a">
-                  <path d="M10 22 q-1 -12 3 -22 q-6 4 -9 11 q7 -3 9 -11 q2 9 9 12 q-4 -8 -9 -11 q6 -1 11 4 q-4 -7 -11 -5 z M11 22 l1 -22 l-1 0 z"/>
-                </g>
-              </g>
-            ))}
-
-            <text x="200" y="260" textAnchor="middle" className="fill-amber-200" fontSize="20" fontWeight="700">
-              رحلتك تبدأ من هنا
-            </text>
-          </svg>
         </div>
       </div>
     </section>
@@ -295,8 +207,8 @@ function Footer() {
           </p>
         </div>
 
-        <FooterCol title="روابط سريعة" items={["الرئيسية","خدماتنا","الوجهات","تأشيرات وعمرة","تواصل معنا"]} />
-        <FooterCol title="الدعم"        items={["الأسئلة الشائعة","سياسة الخصوصية","الشروط والأحكام","سياسة الاسترداد"]} />
+        <FooterCol title="روابط سريعة" items={[["الرئيسية","#"],["خدماتنا","#services"],["الوجهات","#destinations"],["اطلب خدمتك","#request"]]} />
+        <FooterCol title="الدعم" items={[["الأسئلة الشائعة","#faq"],["تواصل معنا","#request"]]} />
 
         <div>
           <div className="font-bold mb-4 text-amber-200">تواصل معنا</div>
@@ -364,13 +276,13 @@ function Footer() {
   );
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+function FooterCol({ title, items }: { title: string; items: [string, string][] }) {
   return (
     <div>
       <div className="font-bold mb-4 text-amber-200">{title}</div>
       <ul className="space-y-2 text-sm text-muted-foreground">
-        {items.map((it) => (
-          <li key={it}><a href="#" className="hover:text-amber-300 transition">{it}</a></li>
+        {items.map(([label, href]) => (
+          <li key={label}><a href={href} className="hover:text-amber-300 transition">{label}</a></li>
         ))}
       </ul>
     </div>
@@ -386,5 +298,23 @@ function SectionHeader({ eyebrow, title, desc, align = "center" }: any) {
       <h2 className="text-2xl sm:text-4xl md:text-5xl font-black leading-snug"><span className="gold-text">{title}</span></h2>
       <p className="mt-3 sm:mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">{desc}</p>
     </div>
+  );
+}
+
+function Faq() {
+  return (
+    <section id="faq" className="scroll-mt-20 py-16 md:py-24">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <SectionHeader eyebrow="الأسئلة الشائعة" title="إجابات سريعة" desc="أكثر الأسئلة التي يسألها عملاؤنا." />
+        <Accordion type="single" collapsible className="mt-10">
+          {faqs.map((f, i) => (
+            <AccordionItem key={i} value={`q${i}`} className="border-amber-500/20">
+              <AccordionTrigger className="text-start font-bold">{f.q}</AccordionTrigger>
+              <AccordionContent className="text-muted-foreground leading-relaxed">{f.a}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
+    </section>
   );
 }

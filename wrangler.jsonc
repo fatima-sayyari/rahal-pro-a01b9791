@@ -4,18 +4,30 @@
   "compatibility_date": "2025-09-24",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
+  // بعد تنفيذ: npx wrangler d1 create rahal-pro-db-staging  ضعي الـ database_id هنا
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "rahal-pro-db-staging",
+      "database_id": "REPLACE_WITH_STAGING_DB_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
   "env": {
     "production": {
       "name": "rahal-pro",
       "workers_dev": false,
       "routes": [
+        { "pattern": "alrhalpro.com", "custom_domain": true },
+        { "pattern": "www.alrhalpro.com", "custom_domain": true }
+      ],
+      // بعد تنفيذ: npx wrangler d1 create rahal-pro-db  ضعي الـ database_id هنا
+      "d1_databases": [
         {
-          "pattern": "alrhalpro.com",
-          "custom_domain": true
-        },
-        {
-          "pattern": "www.alrhalpro.com",
-          "custom_domain": true
+          "binding": "DB",
+          "database_name": "rahal-pro-db",
+          "database_id": "REPLACE_WITH_PRODUCTION_DB_ID",
+          "migrations_dir": "migrations"
         }
       ]
     }
