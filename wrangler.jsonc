@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "rahal-pro-db-staging",
-      "database_id": "REPLACE_WITH_STAGING_DB_ID",
+      "database_id": "17459646-7f3a-4600-a79a-4c6675d7b946",
       "migrations_dir": "migrations"
     }
   ],
@@ -26,7 +26,7 @@
         {
           "binding": "DB",
           "database_name": "rahal-pro-db",
-          "database_id": "REPLACE_WITH_PRODUCTION_DB_ID",
+          "database_id": "ab85e210-ca28-4b1a-907b-700d7b7ad05c",
           "migrations_dir": "migrations"
         }
       ]

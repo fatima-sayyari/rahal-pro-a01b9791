@@ -72,3 +72,82 @@ export const submitReview = createServerFn({ method: "POST" })
       .run();
     return { ok: true as const };
   });
+
+export type PendingReview = Review & { status: "pending" | "approved" | "rejected" };
+
+async function adminPassword(): Promise<string | null> {
+  const { env } = await import("cloudflare:workers");
+  const password = (env as unknown as { ADMIN_PASSWORD?: string }).ADMIN_PASSWORD?.trim();
+  return password ? password : null;
+}
+
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function adminToken(password: string): Promise<string> {
+  return sha256(`rahal-admin-session:${password}`);
+}
+
+async function assertAdmin(): Promise<void> {
+  const password = await adminPassword();
+  if (!password) throw new Error("صفحة الموافقة غير مهيأة بعد");
+  const { getCookie } = await import("@tanstack/react-start/server");
+  const cookie = getCookie("rahal_admin");
+  const expected = await adminToken(password);
+  if (!cookie || !safeEqual(cookie, expected)) throw new Error("يلزم تسجيل الدخول");
+}
+
+export const adminSession = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    await assertAdmin();
+    return { ok: true as const };
+  } catch {
+    return { ok: false as const };
+  }
+});
+
+export const adminLogin = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => z.object({ password: z.string().min(1).max(100) }).parse(d))
+  .handler(async ({ data }) => {
+    const password = await adminPassword();
+    if (!password) throw new Error("صفحة الموافقة غير مهيأة بعد");
+    const given = await sha256(`rahal-admin-check:${data.password}`);
+    const expected = await sha256(`rahal-admin-check:${password}`);
+    if (!safeEqual(given, expected)) throw new Error("كلمة المرور غير صحيحة");
+
+    const { getRequestUrl, setCookie } = await import("@tanstack/react-start/server");
+    setCookie("rahal_admin", await adminToken(password), {
+      httpOnly: true,
+      secure: getRequestUrl().protocol === "https:",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 14,
+    });
+    return { ok: true as const };
+  });
+
+export const listPendingReviews = createServerFn({ method: "GET" }).handler(async () => {
+  await assertAdmin();
+  const db = await getDB();
+  if (!db) throw new Error("قاعدة البيانات غير متاحة");
+  const rows = await db
+    .prepare("SELECT id, name, service, rating, comment, status, created_at FROM reviews WHERE status = 'pending' ORDER BY created_at DESC LIMIT 50")
+    .all<PendingReview>();
+  return { reviews: rows.results };
+});
+
+export const moderateReview = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.number().int().positive(), status: z.enum(["approved", "rejected"]) }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    await assertAdmin();
+    const db = await getDB();
+    if (!db) throw new Error("قاعدة البيانات غير متاحة");
+    await db.prepare("UPDATE reviews SET status = ? WHERE id = ?").bind(data.status, data.id).run();
+    return { ok: true as const };
+  });

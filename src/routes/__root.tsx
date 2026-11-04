@@ -91,13 +91,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // TODO: ضعي رابط صورة المشاركة الكامل بعد النشر، مثال: https://yourdomain.com/og.jpg
       // { property: "og:image", content: "https://yourdomain.com/og.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "theme-color", content: "#1a1410" },
+      { name: "theme-color", content: "#0C0A08" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@300;400;500;700&family=Montserrat:wght@400;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" },
     ],
   }),
 
@@ -134,6 +134,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <div className="page-frame" aria-hidden="true" />
         {children}
         <Scripts />
       </body>
